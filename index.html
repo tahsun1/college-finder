@@ -1,0 +1,145 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+        <title>Collage Finder</title>
+        <link rel="stylesheet" href="style.css" type="text/css" media="all" />
+    </head>
+    <body>
+        <div class="container">
+            <h2>Collage Finder</h2>
+            <div class="form">
+                <div class="topRow">
+                    <button onclick="resetForm()">Reset</button>
+                </div>
+                <div class="row">
+                    <select
+                        id="district"
+                        oninput="
+                            searchCollage('district');
+                            updateThana();
+                        "
+                    ></select>
+                    <label for="district">District</label>
+                </div>
+                <div class="row">
+                    <select
+                        id="thana"
+                        oninput="searchCollage('thana')"
+                    ></select>
+                    <label for="thana">Thana</label>
+                </div>
+                <div class="row">
+                    <select id="group" oninput="searchCollage('group')">
+                        <option value="">All</option>
+                        <option>Business Studies</option>
+                        <option>Humanities</option>
+                        <option>Science</option>
+                    </select>
+                    <label for="group">Group</label>
+                </div>
+                <div class="row">
+                    <select id="gender" oninput="searchCollage('gender')">
+                        <option value="">Any</option>
+                        <option>Co-Edu</option>
+                        <option>Female</option>
+                        <option>Male</option>
+                    </select>
+                    <label for="gender">Gender</label>
+                </div>
+                <div class="row">
+                    <input
+                        type="number"
+                        min="0"
+                        max="5"
+                        id="gpa"
+                        oninput="searchCollage('gpa')"
+                    />
+                    <label for="gpa">GPA</label>
+                </div>
+                <div class="row">
+                    <input
+                        type="text"
+                        id="name"
+                        oninput="searchCollage('name')"
+                    />
+                    <label for="name">Collage Name</label>
+                </div>
+                <div class="row">
+                    <input
+                        type="number"
+                        id="eiinInput"
+                        oninput="searchCollage('eiin')"
+                    />
+                    <label for="eiin">EIIN</label>
+                </div>
+            </div>
+            <div class="note">Showing 2951 Results</div>
+            <div class="table-container">
+                <table class="collages" border="1">
+                    <thead>
+                        <tr>
+                            <th>No</th>
+                            <th>District</th>
+                            <th>Thana</th>
+                            <th>EIIN</th>
+                            <th>Collage</th>
+                            <th>Shift</th>
+                            <th>Gender</th>
+                            <th>Version</th>
+                            <th>Group</th>
+                            <th>Min GPA</th>
+                            <th>Seats</th>
+                        </tr>
+                    </thead>
+                    <tbody id="collages"></tbody>
+                    <tfoot>
+                        <tr>
+                            <td colspan="10" id="pagination"></td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+        </div>
+<footer class="footer">
+    <div class="footer-content">
+        <h3>College Finder Bangladesh</h3>
+
+        <p>
+            Search and explore XI admission colleges across Bangladesh
+            with accurate EIIN, GPA, district, thana, group, and gender
+            filters.
+        </p>
+
+        <div class="footer-info">
+            <span>Version 1.0</span>
+            <span>•</span>
+            <span>Updated 2026</span>
+            <span>•</span>
+            <span>2951+ Colleges Database</span>
+        </div>
+
+        <div class="footer-links">
+            <a href="https://xiclassadmission.gov.bd/"
+               target="_blank"
+               rel="noopener noreferrer">
+                XI Class Admission
+            </a>
+        </div>
+
+        <p class="copyright">
+            © 2026 College Finder Bangladesh. All rights reserved.
+        </p>
+
+        <p class="powered">
+            <strong>Powered by TAHSUN</strong>
+        </p>
+    </div>
+</footer>
+        <div class="loader-div"><span class="loader"></span></div>
+        <script src="xlsx.full.min.js"></script>
+        <script src="script.js"></script>
+    </body>
+</html>
