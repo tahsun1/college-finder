@@ -40,15 +40,17 @@ fetch("./data.xls")
             "SQ GPA",
             "available_seat"
         ];
-        var result = rows.slice(1).map(function (row) {
-            var obj = {};
+        var result = rows.slice(1).map(function (row, index) {
+    var obj = {
+        id: index + 1
+    };
 
-            keys.forEach(function (key, index) {
-                obj[key] = row[index] || "";
-            });
+    keys.forEach(function (key, i) {
+        obj[key] = row[i] || "";
+    });
 
-            return obj;
-        });
+    return obj;
+});
 
         collageData = result;
         collageData.splice(0, 1);
@@ -70,6 +72,9 @@ const collegesPerPage = 50;
 let currentCollageData = [];
 
 function displayCollage() {
+    if(document.head.querySelector("title").innerText !== "Collage Finder"){
+    displayChoicedCollage()
+    }
     currentCollageData = collageData;
     currentPage = 1;
 
@@ -140,6 +145,7 @@ function displayPage() {
             <th>${item.group}</th>
             <th>${item.min_GPA}</th>
             <th>${item.available_seat}</th>
+            ${document.head.querySelector("title").innerText == "Collage Finder" ? "" : `<th><button class="plus-btn" onclick="addToChoiceList(${item.id})">+</button></th>`}
         `;
 
         collages.appendChild(tr);
@@ -262,7 +268,7 @@ function searchCollage(type) {
                 String(college.college_name)
                     .toLowerCase()
                     .startsWith(filteredName)) &&
-            (filteredGPA === null || Number(college.min_GPA) === filteredGPA) &&
+            (filteredGPA === null || Number(college.min_GPA) <= filteredGPA) &&
             (!filteredEIIN ||
                 String(college.eiin).trim().startsWith(filteredEIIN)) &&
             (!filteredGroup ||
@@ -312,6 +318,7 @@ function displayFilteredCollage(filteredData) {
                 <th>${item.group}</th>
                 <th>${item.min_GPA}</th>
                 <th>${item.available_seat}</th>
+            ${document.head.querySelector("title").innerText == "Collage Finder" ? "" : `<th><button class="plus-btn" onclick="addToChoiceList(${item.id})">+</button></th>`}
             `;
 
             collages.appendChild(tr);
@@ -407,4 +414,84 @@ function resetForm() {
     document.getElementById("gender").value = "";
     updateThana();
     displayCollage();
+}
+let choicedCollages = JSON.parse(localStorage.getItem("chosenCollage")) || [];
+function addToChoiceList(id){
+    let eiinAlreadyAdded = choicedCollages.find(c=> c.id === id);
+    if(eiinAlreadyAdded) {
+        alert("Collage already in choice list!");
+        return
+    }
+    if(choicedCollages.length == 10){
+        alert("Choice limit exceeded!")
+        return
+    }
+    
+    let choicedCollageData = collageData.find(c=> c.id === id);
+    choicedCollages.push(choicedCollageData);
+    
+    
+    save()
+    
+    displayChoicedCollage();
+}
+function save(){
+    localStorage.setItem("chosenCollage", JSON.stringify(choicedCollages))
+}
+function displayChoicedCollage(){
+    let choiceListTable = document.getElementById('choiceListTable');
+    choiceListTable.innerHTML = "";
+    if (choicedCollages.length < 1) {
+    choiceListTable.innerHTML = "<tr><td colspan='8'>You have no collage in your choice.</td></tr>";
+    return
+    }
+    choicedCollages.forEach((item, index) => {
+        let tr = document.createElement("tr");
+        tr.innerHTML = `
+            <th>${index + 1}</th>
+            <th>${item.eiin}</th>
+            <th>${item.college_name}</th>
+            <th>${item.group}</th>
+            <th>${item.version}</th>
+            <th>${item.min_GPA}</th>
+            <th>${item.available_seat}</th>
+            <th>
+                <div class="button-wrapper">
+                    <button onclick="toUp(${index})" ${index == 0 ? "disabled": ""}>
+                        &#x2191;
+                    </button>
+                    <button onclick="toDown(${index})" ${index == (choicedCollages.length - 1) ? "disabled": ""}>
+                        &#x2193;
+                    </button>
+                    <button onclick="cancel(${index})">
+                        ×
+                    </button>
+                </div>
+            </th>
+        `;
+        choiceListTable.appendChild(tr);
+    });
+}
+function toUp(index){
+    let target = choicedCollages[index];
+    var temp = choicedCollages[index - 1]
+    choicedCollages[index - 1] = target;
+    choicedCollages[index] = temp;
+    displayChoicedCollage();
+    save()
+}
+function toDown(index){
+    let target = choicedCollages[index];
+    var temp = choicedCollages[index + 1]
+    choicedCollages[index + 1] = target;
+    choicedCollages[index] = temp;
+    displayChoicedCollage();
+    save()
+}
+function cancel(index){
+    if(confirm("Do you want to remove this from choice list?")){
+        choicedCollages.splice(index, 1);
+        displayChoicedCollage();
+        save();
+    }
 }
